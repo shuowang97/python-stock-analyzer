@@ -183,7 +183,11 @@ async function thirdSearch() {
         let dateStr = dic["date"]
         let dateObj = new Date(dateStr)
         // timestamp
-        let date = dateObj.valueOf()
+        let SIXTEEN_HOURS = 60*60*16*1000
+        //08:59:02 09:00:00
+        let date = dateObj.valueOf() - SIXTEEN_HOURS
+        // console.log(new Date(date))
+
         let price = parseFloat(dic["close"])
         let volume = parseInt(dic["volume"])
 
@@ -195,8 +199,8 @@ async function thirdSearch() {
         storeInArray(date, price, array_price, i)
         storeInArray(date, volume, array_volume, i)
     }
-    console.log("price :" + price_max + "-" + price_min)
-    console.log("volume :" + volume_max + "-" + volume_min)
+    // console.log("price :" + price_max + "-" + price_min)
+    // console.log("volume :" + volume_max + "-" + volume_min)
     let extremeArr = []
     extremeArr[0] = price_min
     extremeArr[1] = price_max
@@ -237,17 +241,17 @@ function storeInArray(xVal, yVal, array, i) {
 function createCarts(symbol, date, data, volume, extremes) {
     // Highcharts.getJSON('https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/new-intraday.json', function (data) {
 
-        console.log("Highchart is creatingggggggggggggggggggggggg")
-        console.log(extremes + "---------------------")
+        // console.log("Highchart is creatingggggggggggggggggggggggg")
+        // console.log(extremes + "---------------------")
         if(extremes[1] * 0.7 > extremes[0]) {
-            console.log("111111111111111111111111")
+            // console.log("111111111111111111111111")
             if(extremes[1] > 100){
-                console.log("ddddddddddddddddddddddddddddddd")
+                // console.log("ddddddddddddddddddddddddddddddd")
                 extremes[1] = extremes[1] * 1.1
                 extremes[0] = extremes[0] * 0.9
             } else{
                 extremes[0] = extremes[0] * 0.5
-                console.log("oooooooooooooooooooooooooooooooo")
+                // console.log("oooooooooooooooooooooooooooooooo")
             }
         } else {
             if(extremes[1] > 100){
@@ -272,9 +276,26 @@ function createCarts(symbol, date, data, volume, extremes) {
                 type: 'datetime',
                 tickInterval: 24 * 3600 * 1000,
                 dateTimeLabelFormats: {
-                    day: '%e.%b'
+                    day: '%e. %b'
                 },
+                minPadding: 0,
+                maxPadding: 0,
+                tickmarkPlacement: 'on',
+                startOnTick: true,
+                endOnTick: true,
             },
+
+            plotOptions: {
+                column: {
+                    pointPlacement: 'on',
+                },
+                series: {
+                    dataGrouping: {
+          	        enabled: false
+                    },
+                }
+            },
+
 
             yAxis: [
                 {
@@ -294,7 +315,8 @@ function createCarts(symbol, date, data, volume, extremes) {
                 }],
 
             tooltip: {
-                xDateFormat: '%A. %b %e. %Y'
+                xDateFormat: '%A. %b %e. %Y',
+                // xDateFormat:"%k + %A. %b %e. %Y"
             },
 
             rangeSelector: {
@@ -351,7 +373,7 @@ function createCarts(symbol, date, data, volume, extremes) {
                 yAxis: 1,
                 gapSize: 5,
                 pointWidth: 2,
-                threshold: null
+                threshold: null,
             }]
         });
     // });
